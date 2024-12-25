@@ -10,10 +10,18 @@ interface RouteData extends RowDataPacket {
     day: string;
 }
 
-export async function GET() {
+export async function GET(req: Request) {
     try {
+        const url = new URL(req.url);
+        const userId = url.searchParams.get('user_id');
+
         // Get the global database connection
         const connection = await getDbConnection();
+
+        console.log(`SELECT rl.id, rl.route_name, ar.day 
+            FROM rcl_sr_assign_in_route ar
+            INNER JOIN rcl_route_list rl ON ar.route_id = rl.id
+            WHERE ar.sr_code = '${userId}'`)
 
         // Execute query and cast result to the correct type
         const [rows] = await connection.execute<RouteData[]>(
@@ -21,7 +29,7 @@ export async function GET() {
             SELECT rl.id, rl.route_name, ar.day 
             FROM rcl_sr_assign_in_route ar
             INNER JOIN rcl_route_list rl ON ar.route_id = rl.id
-            WHERE ar.sr_code = '30124'
+            WHERE ar.sr_code = '${userId}'
         `
         );
 

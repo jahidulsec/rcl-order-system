@@ -16,6 +16,7 @@ export default function RetailerListPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const routeId = searchParams.get('route_id');
+    const userId = localStorage.getItem("userId");
 
     const [retailers, setRetailers] = useState<Retailer[]>([]);
     const [filteredRetailers, setFilteredRetailers] = useState<Retailer[]>([]);
@@ -25,7 +26,7 @@ export default function RetailerListPage() {
     useEffect(() => {
         if (routeId) {
             setIsLoading(true);
-            fetch(`/api/getRetailers?route_id=${routeId}`)
+            fetch(`/api/getRetailers?route_id=${routeId}&user_id=${userId}`)
                 .then((res) => res.json())
                 .then((data) => {
                     setRetailers(data);
@@ -50,14 +51,14 @@ export default function RetailerListPage() {
     const handleRetailerClick = (retailer: Retailer) => {
         localStorage.setItem('selectedRetailerName', retailer.retailer_name);
         localStorage.setItem('selectedRetailerId', String(retailer.id));
-        router.push('/');
+        router.push(`/?user_id=${userId}`);
     };
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-50">
             {/* Back Button */}
             <button
-                onClick={() => {router.push('/');}}
+                onClick={() => {router.push(`/?user_id=${userId}`);}}
                 className="absolute top-4 left-4 flex items-center gap-2 text-blue-600 hover:text-blue-800"
             >
                 <span className="text-lg">🔙</span>

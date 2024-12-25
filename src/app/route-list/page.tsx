@@ -9,6 +9,7 @@ interface Route {
 }
 
 export default function RouteListPage() {
+    const userId = localStorage.getItem("userId");
     const [routes, setRoutes] = useState<Route[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
@@ -16,7 +17,7 @@ export default function RouteListPage() {
     // Fetch routes
     useEffect(() => {
         const fetchRoutes = async () => {
-            const res = await fetch('/api/getRoutes');
+            const res = await fetch('/api/getRoutes?user_id='+userId);
             const data = await res.json();
             setRoutes(data);
         };
@@ -38,14 +39,14 @@ export default function RouteListPage() {
         localStorage.setItem('selectedRouteId', String(routeId));
 
         // Navigate back to the home page
-        router.push('/');
+        router.push(`/?user_id=${userId}`);
     };
 
     return (
         <div className="p-6 bg-gray-50 rounded-lg shadow-md max-w-md mx-auto">
             {/* Back Button */}
             <button
-                onClick={() => {router.push('/');}}
+                onClick={() => {router.push(`/?user_id=${userId}`);}}
                 className="absolute top-4 left-4 flex items-center gap-2 text-blue-600 hover:text-blue-800"
             >
                 <span className="text-lg">🔙</span>

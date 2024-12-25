@@ -41,7 +41,8 @@ interface OffersData extends RowDataPacket {
 }
 
 export default function ProductListPage() {
-  const router = useRouter();
+    const userId = localStorage.getItem("userId");
+    const router = useRouter();
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("category_id");
 
@@ -148,7 +149,7 @@ export default function ProductListPage() {
     );
     if (!isProductExist) {
       // Fetch distributor stock for the selected product
-      fetch(`/api/getDistributorStock?product_id=${product.id}`)
+      fetch(`/api/getDistributorStock?product_id=${product.id}&user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => {
           setStockData(data[0]);
@@ -216,7 +217,7 @@ export default function ProductListPage() {
 
           // Close modal and navigate to home page
           setIsModalOpen(false);
-          router.push("/");
+          router.push(`/?user_id=${userId}`);
         }
       } else {
         // Optionally display a warning or alert if the product exists
@@ -230,7 +231,7 @@ export default function ProductListPage() {
       {/* Back Button */}
       <button
         onClick={() => {
-          router.push("/");
+            router.push(`/?user_id=${userId}`);
         }}
         className="absolute top-4 left-4 flex items-center gap-2 text-blue-600 hover:text-blue-800"
       >

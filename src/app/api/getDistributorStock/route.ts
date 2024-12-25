@@ -17,6 +17,7 @@ export async function GET(req: Request) {
         // Get query parameters from the request
         const url = new URL(req.url);
         const productId = url.searchParams.get('product_id');
+        const userId = url.searchParams.get('user_id');
 
         if (!productId) {
             return NextResponse.json({ error: 'Missing product id parameter' }, { status: 400 });
@@ -37,10 +38,10 @@ export async function GET(req: Request) {
                 AND o.user_id IN (
                     SELECT sr_id FROM rcl_distributor_territory 
                     WHERE distributor_id = (
-                        SELECT distributor_id FROM rcl_distributor_territory WHERE sr_id = '30124')) 
+                        SELECT distributor_id FROM rcl_distributor_territory WHERE sr_id = '${userId}')) 
                         GROUP BY ol.product_id LIMIT 1),0) pis FROM rcl_distributor_stock ds 
             WHERE ds.product_id = ? 
-            AND ds.distributor_id = (SELECT distributor_id FROM rcl_distributor_territory WHERE sr_id = '30124' LIMIT 1);
+            AND ds.distributor_id = (SELECT distributor_id FROM rcl_distributor_territory WHERE sr_id = '${userId}' LIMIT 1);
         `,[productId, productId]
         );
 

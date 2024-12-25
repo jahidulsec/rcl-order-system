@@ -24,7 +24,7 @@ export async function GET(req: Request) {
         // Get query parameters from the request
         const url = new URL(req.url);
         const routeId = url.searchParams.get('route_id');
-        const srCode = '30124'; // You can replace it with dynamic data if necessary
+        const userId = url.searchParams.get('user_id');
 
         if (!routeId) {
             return NextResponse.json({ error: 'Missing route_id parameter' }, { status: 400 });
@@ -48,7 +48,7 @@ export async function GET(req: Request) {
             GROUP BY rl.id 
             LIMIT 0, 500
         `,
-            [srCode, routeId]
+            [userId, routeId]
         );
         // Return the rows as JSON
         return NextResponse.json(rows);

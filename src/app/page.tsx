@@ -47,7 +47,7 @@ interface OffersData extends RowDataPacket {
 }
 
 interface OrderData {
-  userId: string;
+  userId?: string | null;
   retailerId: string;
   visitType: string;
   latitude?: number | null;
@@ -57,6 +57,7 @@ interface OrderData {
 export default function HomePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const userId: string | null = searchParams.get("user_id");
   const [selectedRoute, setSelectedRoute] = useState<{
     name: string;
     id: number;
@@ -98,6 +99,12 @@ export default function HomePage() {
   const currentDate = new Date().toLocaleDateString();
 
   useEffect(() => {
+      if (userId) {
+          localStorage.setItem("userId", userId);
+      } else {
+          alert("User ID is missing. Please check the URL parameters.");
+      }
+
     // Check if geolocation is available
     if (navigator.geolocation) {
       // Get the current position
@@ -325,7 +332,7 @@ export default function HomePage() {
   const handleSaveVisit = async () => {
     if (selectedVisitType) {
       const orderData: OrderData = {
-        userId: "30124", // Replace with actual user ID
+        userId: userId,
         retailerId: selectedRetailer.id.toString(),
         visitType: selectedVisitType,
         latitude: latitude,
@@ -364,7 +371,7 @@ export default function HomePage() {
     if (selectedProductList) {
       const orderData: OrderData = {
         visitType: "",
-        userId: "30124",
+        userId: userId,
         retailerId: selectedRetailer.id.toString(),
         latitude: latitude,
         longitude: longitude,
@@ -396,23 +403,15 @@ export default function HomePage() {
           total: totalAmount - discount_amount,
           ctn_factor: selectedProductList[i].ctn_factor,
           discount_amount: discount_amount,
-          s_discount_amount: Number(
-            selectedProductList[i].offer?.discount_amount
-          ),
-          additional_discount_amount: Number(
-            selectedProductList[i].offer?.additional_discount_amount
-          ),
+          s_discount_amount: Number(selectedProductList[i].offer?.discount_amount),
+          additional_discount_amount: Number(selectedProductList[i].offer?.additional_discount_amount),
           product_status: "Continue",
           is_sample: is_sample ? 1 : 0,
-          sample_product_code: is_sample
-            ? selectedProductList[i].offer?.sample_id
-            : null,
+          sample_product_code: is_sample ? selectedProductList[i].offer?.sample_id : null,
           sample_qty: is_sample ? selectedProductList[i].offer?.sample_qty : 0,
           is_gift: is_gift === 1 ? 1 : 0,
-          gift_item_code:
-            is_gift === 1 ? selectedProductList[i].offer?.gift_item_code : null,
-          gift_item_qty:
-            is_gift === 1 ? selectedProductList[i].offer?.gift_item_qty : 0,
+          gift_item_code: is_gift === 1 ? selectedProductList[i].offer?.gift_item_code : null,
+          gift_item_qty: is_gift === 1 ? selectedProductList[i].offer?.gift_item_qty : 0,
         });
       }
       try {
@@ -423,7 +422,6 @@ export default function HomePage() {
         });
 
         if (response.ok) {
-          console.log(response);
           alert("Order saved successfully!");
           setShowVisitPopup(false); // Close popup
           setSelectedVisitType(""); // Reset dropdown
@@ -454,7 +452,13 @@ export default function HomePage() {
             Route
           </label>
           <div
-            onClick={() => router.push("/route-list")}
+            onClick={() => {
+                if(userId) {
+                    router.push('/route-list')
+                }else {
+                    alert("User ID is missing. Please check the URL parameters.");
+                }
+            }}
             className="w-full p-3 border border-gray-300 rounded-lg cursor-pointer flex justify-between items-center bg-white hover:border-gray-400 transition duration-200"
           >
             <span className="text-gray-700 text-sm">{selectedRoute.name}</span>
@@ -481,9 +485,13 @@ export default function HomePage() {
             Retailer
           </label>
           <div
-            onClick={() =>
-              router.push(`/retailer-list?route_id=${selectedRoute.id}`)
-            }
+            onClick={() => {
+                if(userId) {
+                    router.push(`/retailer-list?route_id=${selectedRoute.id}`);
+                }else {
+                    alert("User ID is missing. Please check the URL parameters.");
+                }
+            }}
             className="w-full p-3 border border-gray-300 rounded-lg cursor-pointer flex justify-between items-center bg-white hover:border-gray-400 transition duration-200"
           >
             <span className="text-gray-700 text-sm truncate">
