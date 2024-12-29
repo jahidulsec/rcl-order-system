@@ -9,19 +9,22 @@ interface Route {
 }
 
 export default function RouteListPage() {
-    const userId = localStorage.getItem("userId");
+    const [userId, setUserId] = useState<string | null>(null);
     const [routes, setRoutes] = useState<Route[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
 
     // Fetch routes
     useEffect(() => {
-        const fetchRoutes = async () => {
-            const res = await fetch('/api/getRoutes?user_id='+userId);
+        const storedUserId = localStorage.getItem("userId");
+        setUserId(storedUserId);
+
+        const fetchRoutes = async (storedUserId: string | null) => {
+            const res = await fetch('/api/getRoutes?user_id='+storedUserId);
             const data = await res.json();
             setRoutes(data);
         };
-        fetchRoutes();
+        fetchRoutes(storedUserId);
     }, []);
 
     // Filtered routes

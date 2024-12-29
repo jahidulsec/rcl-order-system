@@ -41,7 +41,7 @@ interface OffersData extends RowDataPacket {
 }
 
 export default function ProductListPage() {
-    const userId = localStorage.getItem("userId");
+    const [userId, setUserId] = useState<string | null>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
     const categoryId = searchParams.get("category_id");
@@ -54,6 +54,12 @@ export default function ProductListPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [stockData, setStockData] = useState<DistributorStock | null>(null);
   const [quantity, setQuantity] = useState<string>('');
+
+    // Fetch
+    useEffect(() => {
+        const storedUserId = localStorage.getItem('userId');
+        setUserId(storedUserId);
+    }, []);
 
   useEffect(() => {
     if (categoryId) {
