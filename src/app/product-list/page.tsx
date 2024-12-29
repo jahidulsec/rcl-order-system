@@ -43,8 +43,8 @@ interface OffersData extends RowDataPacket {
 export default function ProductListPage() {
     const userId = localStorage.getItem("userId");
     const router = useRouter();
-  const searchParams = useSearchParams();
-  const categoryId = searchParams.get("category_id");
+    const searchParams = useSearchParams();
+    const categoryId = searchParams.get("category_id");
 
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -53,7 +53,7 @@ export default function ProductListPage() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [stockData, setStockData] = useState<DistributorStock | null>(null);
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<string>('');
 
   useEffect(() => {
     if (categoryId) {
@@ -164,14 +164,39 @@ export default function ProductListPage() {
     }
   };
 
-  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Math.max(1, Number(e.target.value)); // Ensure quantity is at least 1
-    setQuantity(value);
-  };
+  // const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = Math.max(1, Number(e.target.value)); // Ensure quantity is at least 1
+  //   setQuantity(value);
+  // };
+
+    const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+
+        // Check for non-numeric or empty values
+        if (!/^\d*$/.test(value)) {
+            alert("Please enter a valid number.");
+            return;
+        }
+
+        // Ensure numeric value is at least 1
+        const numericValue = Number(value);
+        if (numericValue < 1 && value !== "") {
+            alert("Quantity cannot be less than 1.");
+            setQuantity("1"); // Reset to default
+            return;
+        }
+
+        setQuantity(value); // Set the valid value (can be empty)
+    };
 
   const handleAddToCart = async () => {
-    if (selectedProduct && stockData) {
-      const offerDetails = await getOffer(quantity);
+      if (Number(quantity) < 1) {
+          alert("Quantity cannot be less than 1.");
+          return;
+      }
+
+      if (selectedProduct && stockData) {
+      const offerDetails = await getOffer(Number(quantity));
 
       // Store product information in localStorage or handle it as needed
       localStorage.setItem("selectedProductName", selectedProduct.product_name);
@@ -326,26 +351,25 @@ export default function ProductListPage() {
             </div>
 
             {/* Quantity Input */}
-            <div className="mb-2">
-              <label className="block text-gray-700 font-medium mb-2">
-                Quantity
-              </label>
-              <input
-                type="number"
-                value={quantity}
-                onChange={handleQuantityChange}
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="1"
-                max={stockData.stock}
-              />
-            </div>
+              <div className="mb-2">
+                  <label className="block text-gray-700 font-medium mb-2">
+                      Quantity
+                  </label>
+                  <input
+                      type="text"
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                      className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      maxLength={stockData.stock.toString().length} // Optional: Limit length based on max stock
+                  />
+              </div>
 
-            {/* Buttons */}
-            <div className="flex justify-between">
-              <button
-                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200"
-                onClick={handleAddToCart}
-              >
+              {/* Buttons */}
+              <div className="flex justify-between">
+                  <button
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200"
+                      onClick={handleAddToCart}
+                  >
                 Add to Cart
               </button>
               <button
