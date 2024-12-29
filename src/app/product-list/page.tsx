@@ -319,9 +319,9 @@ export default function ProductListPage() {
                     </p>
                   </div>
                   <div>
-                    <span className="inline-block bg-blue-100 text-blue-600 px-3 py-1 text-xs font-medium rounded-full">
-                      Available
-                    </span>
+                    {/*<span className="inline-block bg-blue-100 text-blue-600 px-3 py-1 text-xs font-medium rounded-full">*/}
+                    {/*  Available*/}
+                    {/*</span>*/}
                   </div>
                 </div>
               </li>
