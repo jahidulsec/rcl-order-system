@@ -232,9 +232,9 @@ export default function ProductListPage() {
         const inputQuantity = Number(quantity);
 
         // Check if updatedQty exceeds available stock
-        if (stockData && inputQuantity > stockData.stock) {
+        if (stockData && inputQuantity > stockData.stock_per_pis) {
           alert(
-            `Cannot update quantity. Available stock is only ${stockData.stock}.`
+            `Cannot update quantity. Available stock is only ${stockData.stock_per_pis}.`
           );
         } else {
           // Add the new product at the beginning of the list
@@ -349,10 +349,7 @@ export default function ProductListPage() {
             {/* Stock Information */}
             <div className="mb-2">
               <p className="text-gray-700">
-                <strong>Available Stock:</strong> {stockData.stock}
-              </p>
-              <p className="text-gray-700">
-                <strong>Stock per Unit:</strong> {stockData.stock_per_pis}
+                <strong>Available Stock:</strong> {stockData.stock_per_pis}
               </p>
             </div>
 
@@ -366,7 +363,7 @@ export default function ProductListPage() {
                       value={quantity}
                       onChange={handleQuantityChange}
                       className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      maxLength={stockData.stock.toString().length} // Optional: Limit length based on max stock
+                      maxLength={stockData.stock_per_pis.toString().length} // Optional: Limit length based on max stock
                   />
               </div>
 

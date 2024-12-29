@@ -175,7 +175,7 @@ export default function HomePage() {
 
   const handleProductClick = (product: CartProduct) => {
     // Fetch distributor stock for the selected product
-    fetch(`/api/getDistributorStock?product_id=${product.id}`)
+    fetch(`/api/getDistributorStock?product_id=${product.id}&user_id=${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setStockData(data[0]);
@@ -203,7 +203,7 @@ export default function HomePage() {
     productId: number | undefined
   ): Promise<OffersData[]> => {
     try {
-      const res = await fetch(`/api/getOffer?product_id=${productId}`);
+      const res = await fetch(`/api/getOffer?product_id=${productId}&user_id=${userId}`);
       const data: OffersData[] = await res.json();
 
       if (data && data.length > 0) {
@@ -264,9 +264,9 @@ export default function HomePage() {
     const updatedQuantity = Number(updatedQty);
 
     // Check if updatedQty exceeds available stock
-    if (stockData && updatedQuantity > stockData.stock) {
+    if (stockData && updatedQuantity > stockData.stock_per_pis) {
       alert(
-        `Cannot update quantity. Available stock is only ${stockData.stock}.`
+        `Cannot update quantity. Available stock is only ${stockData.stock_per_pis}.`
       );
       return;
     }
@@ -720,10 +720,7 @@ export default function HomePage() {
 
             <div className="mb-4">
               <label className="block text-gray-700">
-                Available Stock: {stockData.stock}
-              </label>
-              <label className="block text-gray-700">
-                Stock per Unit: {stockData.stock_per_pis}
+                Available Stock: {stockData.stock_per_pis}
               </label>
             </div>
 
