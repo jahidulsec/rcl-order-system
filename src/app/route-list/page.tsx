@@ -12,6 +12,7 @@ export default function RouteListPage() {
     const [userId, setUserId] = useState<string | null>(null);
     const [routes, setRoutes] = useState<Route[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [filteredData, setFilteredData] = useState<Route[]>([]);
     const router = useRouter();
 
     // Fetch routes
@@ -27,10 +28,17 @@ export default function RouteListPage() {
         fetchRoutes(storedUserId);
     }, []);
 
-    // Filtered routes
-    const filteredRoutes = routes.filter((route) =>
-        route.route_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // // Filtered routes
+    // const filteredRoutes = routes.filter((route) =>
+    //     route.route_name.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
+    // Handle Search
+    useEffect(() => {
+        const filtered = routes.filter((route) =>
+            route.route_name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredData(filtered);
+    }, [searchTerm, routes]);
 
     const handleRouteSelect = (routeName: string, routeId: number) => {
         // Remove selected retailer in localStorage
@@ -77,20 +85,26 @@ export default function RouteListPage() {
 
             {/* Route List */}
             <ul className="divide-y divide-gray-200 bg-white rounded-lg shadow-md overflow-hidden">
-                {filteredRoutes.map((route) => (
-                    <li
-                        key={route.id}
-                        className="p-4 hover:bg-blue-100 transition-all duration-200 cursor-pointer flex items-center gap-2"
-                        onClick={() => handleRouteSelect(route.route_name, route.id)}
-                    >
-                        {/* Route Icon */}
-                        <span className="text-blue-500 text-lg">📍</span>
-                        {/* Route Name */}
-                        <span className="text-gray-700 font-medium">
-                    {route.route_name}
-                </span>
-                    </li>
-                ))}
+                {filteredData.length > 0 ? (
+                    filteredData.map((route) => (
+                        <li
+                            key={route.id}
+                            className="p-4 hover:bg-blue-100 transition-all duration-200 cursor-pointer flex items-center gap-2"
+                            onClick={() => handleRouteSelect(route.route_name, route.id)}
+                        >
+                            {/* Route Icon */}
+                            <span className="text-blue-500 text-lg">📍</span>
+                            {/* Route Name */}
+                            <span className="text-gray-700 font-medium">
+                                {route.route_name}
+                            </span>
+                        </li>
+                    ))
+                ) : (
+                    <p className="p-4 text-gray-500 text-center">
+                        No route found.
+                    </p>
+                )}
             </ul>
         </div>
     );

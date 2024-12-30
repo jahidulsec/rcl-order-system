@@ -18,11 +18,6 @@ export async function GET(req: Request) {
         // Get the global database connection
         const connection = await getDbConnection();
 
-        console.log(`SELECT rl.id, rl.route_name, ar.day 
-            FROM rcl_sr_assign_in_route ar
-            INNER JOIN rcl_route_list rl ON ar.route_id = rl.id
-            WHERE ar.sr_code = '${userId}'`)
-
         // Execute query and cast result to the correct type
         const [rows] = await connection.execute<RouteData[]>(
             `
