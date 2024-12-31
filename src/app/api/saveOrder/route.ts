@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
         const deviceType = 'WebApplicationTEST';
 
         const orderQuery = `
-            INSERT INTO rcl_order_test (
+            INSERT INTO rcl_order (
                 user_id, retailer_id, order_date, device_type, status, draft, visit_type, latitude, longitude, geo_status
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
 
         // Insert into `order_list` table
         const insertOrderListQuery = `
-            INSERT INTO rcl_order_list_test (
+            INSERT INTO rcl_order_list (
                 order_id, product_id, price, qty, org_total, total, ctn_factor, discount_amount, 
                 s_discount_amount, additional_discount_amount, product_status, is_sample_available, 
                 is_sample, sample_qty, for_which_product_code, sample_product_code, is_gift, gift_item_code, gift_item_qty

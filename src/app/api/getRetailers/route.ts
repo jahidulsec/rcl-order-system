@@ -40,7 +40,7 @@ export async function GET(req: Request) {
             FROM rcl_sr_assign_in_route ssin 
             INNER JOIN rcl_retailer_list rl ON ssin.sr_code = rl.sr_id 
             AND ssin.route_id = rl.route_id
-            LEFT JOIN rcl_order_test o ON rl.id = o.retailer_id 
+            LEFT JOIN rcl_order o ON rl.id = o.retailer_id 
             AND DATE_FORMAT(o.order_date, '%Y-%m-%d') = DATE_FORMAT(CURRENT_DATE, '%Y-%m-%d')
             WHERE ssin.sr_code = ? 
             AND ssin.route_id = ?  
