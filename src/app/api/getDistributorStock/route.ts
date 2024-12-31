@@ -32,7 +32,7 @@ export async function GET(req: Request) {
             SELECT ds.id,ds.distributor_id,ds.product_id,ds.stock,ds.stock_per_pis,
             COALESCE((
                 SELECT SUM(ol.qty) pis 
-                FROM rcl_order ol 
+                FROM rcl_order_list ol 
                 INNER JOIN rcl_order o ON ol.order_id=o.id 
                 WHERE o.status = 1 AND ol.product_id= ? 
                 AND o.user_id IN (
